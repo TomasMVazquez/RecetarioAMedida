@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "450717362835",
+    "firebase_url": "https://recetarioamedida.firebaseio.com",
+    "project_id": "recetarioamedida",
+    "storage_bucket": "recetarioamedida.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450717362835:android:65faf0654214a9fb",
+        "android_client_info": {
+          "package_name": "com.example.toms.recetarioamedida"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450717362835-2paq7cjptifqfg4h3ttd9sknflns9v7p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.toms.recetarioamedida",
+            "certificate_hash": "68528757a6bdd69d734e4e2ae217664e4cdc4871"
+          }
+        },
+        {
+          "client_id": "450717362835-9ir5ppv0fmjt1sjh2r5jtp3sb2ijtn9d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbFqmhroGDyGdQph5UY-OZqjhSjn9rZfA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450717362835-9ir5ppv0fmjt1sjh2r5jtp3sb2ijtn9d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
