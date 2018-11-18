@@ -31,5 +31,6 @@
 
     //Storage
     <string name="ruta_imagenes">recetas</string>
+    <string name="ruta_database">recetaList</string>
 
 </resources>

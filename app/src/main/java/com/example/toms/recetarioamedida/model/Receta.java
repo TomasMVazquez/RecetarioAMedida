@@ -12,6 +12,7 @@ public class Receta implements Serializable  {
     private String titulo;
     private List<String> ingredientes;
     private String procedimiento;
+    private Integer position;
 
     //constructor
     public Receta() {
@@ -48,6 +49,9 @@ public class Receta implements Serializable  {
 
 
     //getter
+    public Integer getPosition() {
+        return position;
+    }
 
     public String getId() {
         return id;

@@ -1,7 +1,9 @@
 package com.example.toms.recetarioamedida.view.adaptador;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -10,9 +12,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
 import com.example.toms.recetarioamedida.controller.SwipeAndDragHelper;
 import com.example.toms.recetarioamedida.model.Receta;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 import java.util.ArrayList;
@@ -25,13 +38,21 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
     private List<Receta> recetasList;
     protected AdaptadorInterface escuchador;
     private ItemTouchHelper touchHelper;
-
+    private FirebaseStorage mStorage;
+    private Context context;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
+    private Integer i;
 
     //Constructor
-
     public RecetarioAdaptador(List<Receta> recetasList, AdaptadorInterface escuchador) {
         this.recetasList = recetasList;
         this.escuchador = escuchador;
+    }
+
+    public void setRecetasList(List<Receta> recetasList) {
+        this.recetasList = recetasList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -39,7 +60,7 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
 
         //Buscamos contexto
-        Context context = parent.getContext();
+        context = parent.getContext();
 
         //pasamos contexto al inflador
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -63,7 +84,7 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
         final RecetaViewHolder recetaViewHolder = (RecetaViewHolder) viewHolder;
 
         //Cargamos dato
-        recetaViewHolder.cargar(receta);
+        recetaViewHolder.cargar(context,receta);
 
     }
 
@@ -75,8 +96,10 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
     //Metodos sobreescritos de la interface implementada
     //Cambiar posicion de la celda cuando la muevo
     @Override
-    public void onViewMoved(int oldPosition, int newPosition) {
+    public void onViewMoved(int oldPosition, final int newPosition) {
         Receta targetReceta = recetasList.get(oldPosition);
+        String idMoved = recetasList.get(oldPosition).getId();
+        String idToMoved = recetasList.get(newPosition).getId();
         Receta receta = new Receta(targetReceta);
         recetasList.remove(oldPosition);
         recetasList.add(newPosition,receta);
@@ -86,6 +109,10 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
     //Eliminar cuando hagamos swipe
     @Override
     public void onViewSwiped(int position) {
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference  = mDatabase.getReference();
+        String id = recetasList.get(position).getId();
+        mReference.child("recetaList").child(id).removeValue();
         recetasList.remove(position);
         notifyItemRemoved(position);
     }
@@ -108,6 +135,7 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
         private ImageView imagen;
         private TextView procedimiento;
 
+
         //constructor
         public RecetaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -128,8 +156,30 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
         }
 
         //metodo del view holder para cargar datos
-        public void cargar(Receta receta){
-            imagen.setImageResource(R.drawable.recetas_logo);
+        public void cargar(final Context context, Receta receta){
+            //Gerente
+            mStorage = FirebaseStorage.getInstance();
+
+            //Raiz del Storage
+            StorageReference raiz = mStorage.getReference();
+
+            if (receta.getImagen()!=null) {
+                StorageReference imagenReference = raiz.child(context.getResources().getString(R.string.ruta_imagenes)).child(receta.getImagen());
+                imagenReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(context).load(uri).into(imagen);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+            }else {
+                Glide.with(context).load(R.drawable.recetas_logo).into(imagen);
+            }
+            //imagen.setImageResource(R.drawable.recetas_logo);
             titulo.setText(receta.getTitulo());
             procedimiento.setText(receta.getProcedimiento());
         }

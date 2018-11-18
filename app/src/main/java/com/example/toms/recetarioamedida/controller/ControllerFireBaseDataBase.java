@@ -14,14 +14,11 @@ public class ControllerFireBaseDataBase {
     public void entregarListaRecetas(final ResultListener<List<Receta>> listResultListener){
 
         DaoFireBaseDataBase daoFireBaseDataBase = new DaoFireBaseDataBase();
+
         daoFireBaseDataBase.dameRecetas(new ResultListener<List<Receta>>() {
             @Override
             public void finish(List<Receta> results) {
-                if (results!=null) {
-                    listResultListener.finish(results);
-                }else {
-                    listResultListener.finish(recetaList);
-                }
+                listResultListener.finish(results);
             }
         });
 

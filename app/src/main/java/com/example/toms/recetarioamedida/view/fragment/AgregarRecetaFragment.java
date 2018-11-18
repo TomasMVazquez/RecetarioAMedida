@@ -19,7 +19,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
+import com.example.toms.recetarioamedida.controller.ControllerFireBaseDataBase;
 import com.example.toms.recetarioamedida.model.Receta;
+import com.example.toms.recetarioamedida.utils.ResultListener;
 import com.example.toms.recetarioamedida.view.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +56,7 @@ public class AgregarRecetaFragment extends Fragment {
     private FloatingActionButton agregarIngrediente;
     private FloatingActionButton agregarReceta;
     private String rutaImagen;
+    private Integer position;
 
     public AgregarRecetaFragment() {
         // Required empty public constructor
@@ -73,7 +76,6 @@ public class AgregarRecetaFragment extends Fragment {
 
         //Raiz del Storage
         StorageReference raiz = mStorage.getReference();
-
 
         imagen = view.findViewById(R.id.imagenAgregada);
         titulo = view.findViewById(R.id.addTitulo);
@@ -116,6 +118,7 @@ public class AgregarRecetaFragment extends Fragment {
 
                 Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString());
                 agregarRecetaDatabase(nuevaReceta);
+
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AgregarRecetaFragment.this).commit();
 
             }
@@ -125,7 +128,7 @@ public class AgregarRecetaFragment extends Fragment {
         return view;
     }
 
-    public void agregarRecetaDatabase(Receta receta){
+    public void agregarRecetaDatabase(final Receta receta){
         DatabaseReference id = mReference.child("recetaList").push();
         id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento()));
     }
@@ -141,15 +144,16 @@ public class AgregarRecetaFragment extends Fragment {
 
             @Override
             public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
+
+                //RAIZ REFERENCIA
+                StorageReference raiz = mStorage.getReference();
+
                 if (list.size()>0) {
                     switch (i) {
                         case 101:
                             File file = list.get(0);
                             Uri uri = Uri.fromFile(file);
                             Glide.with(getActivity()).load(uri).into(imagen);
-
-                            //RAIZ REFERENCIA
-                            StorageReference raiz = mStorage.getReference();
 
                             final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
 
@@ -169,6 +173,10 @@ public class AgregarRecetaFragment extends Fragment {
                                 }
                             });
 
+                            break;
+
+                        default:
+                            Glide.with(getActivity()).load(R.drawable.recetas_logo).into(imagen);
                             break;
                     }
                 }

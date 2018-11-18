@@ -7,7 +7,12 @@ public class RecetaContenedor {
     //Atributos
     private List<Receta> recetaList;
 
+
     //Constructor
+
+    public RecetaContenedor() {
+    }
+
     public RecetaContenedor(List<Receta> recetaList) {
         this.recetaList = recetaList;
     }

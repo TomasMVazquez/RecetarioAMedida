@@ -33,6 +33,7 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
     public static final String KEY_BUSCAR = "buscar";
 
     private List<Receta> recetaList;
+    private RecetarioAdaptador recetarioAdaptador;
 
     public RecetasFragment() {
         // Required empty public constructor
@@ -45,17 +46,19 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recetas, container, false);
 
-        //Datos
-//        ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
-//
-//        controllerFireBaseDataBase.entregarListaRecetas(new ResultListener<List<Receta>>() {
-//            @Override
-//            public void finish(List<Receta> results) {
-//                recetaList = results;
-//            }
-//        });
+        recetarioAdaptador = new RecetarioAdaptador(new ArrayList<Receta>(),this);
 
-        recetaList = new ArrayList<>();
+        //Datos
+        ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
+
+        controllerFireBaseDataBase.entregarListaRecetas(new ResultListener<List<Receta>>() {
+            @Override
+            public void finish(List<Receta> results) {
+                if (results.size()>0) {
+                    recetarioAdaptador.setRecetasList(results);
+                }
+            }
+        });
 
         //Recycler View
         RecyclerView recetasRecycler = view.findViewById(R.id.recyclerRecetas);
@@ -66,7 +69,6 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
         recetasRecycler.setLayoutManager(llm);
 
         //Adaptador
-        RecetarioAdaptador recetarioAdaptador = new RecetarioAdaptador(recetaList,this);
         recetasRecycler.setAdapter(recetarioAdaptador);
 
         //Swipe and Drag
