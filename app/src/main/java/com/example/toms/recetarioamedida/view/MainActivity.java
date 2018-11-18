@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,12 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
+import com.example.toms.recetarioamedida.view.fragment.AgregarRecetaFragment;
 import com.example.toms.recetarioamedida.view.fragment.LogInFragment;
+import com.example.toms.recetarioamedida.view.fragment.RecetasFragment;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -29,19 +34,34 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.util.List;
+
+import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CallbackManager callbackManager;
-    private LogInFragment logInFragment = new LogInFragment();
+    private TextView frameText;
     private ImageView imageView;
+    private CallbackManager callbackManager;
+
+    private LogInFragment logInFragment = new LogInFragment();
+    private RecetasFragment recetasFragment = new RecetasFragment();
+
     private FirebaseAuth mAuth;
+    private FirebaseStorage mStorage;
     private FirebaseUser currentUser;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -72,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-            }, 2000);
+            }, 3000);
 
             updateUI(currentUser);
 
@@ -88,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        imageView = findViewById(R.id.imagenFacebook);
+
+        frameText = findViewById(R.id.frameText);
 
         //NavigationView
         drawerLayout = findViewById(R.id.drawer);
@@ -115,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.recetas:
                         //cargar fragments
+                        cargarFragment(recetasFragment);
                         return true;
 
                     case R.id.aboutUs:
@@ -167,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            Toast.makeText(MainActivity.this, user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, user.getDisplayName()+" OnResume", Toast.LENGTH_SHORT).show();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(MainActivity.this, "Authentication failed.",
@@ -182,14 +204,66 @@ public class MainActivity extends AppCompatActivity {
     public void updateUI(FirebaseUser user){
 
         if (user != null) {
-            //String name = user.getDisplayName();
+            String name = user.getDisplayName() + " " + R.string.login_salir;
             Uri uri = user.getPhotoUrl();
-            Glide.with(this).load(uri).into(imageView);
-            navigationView.getMenu().findItem(R.id.login).setTitle(R.string.login_salir);
+            //Glide.with(this).load(uri).into(imageView);
+            frameText.setText(user.getDisplayName());
+            navigationView.getMenu().findItem(R.id.login).setTitle(name);
 
         }else {
             //cargarFragment(logInFragment);
         }
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        EasyImage.handleActivityResult(requestCode, resultCode, data, MainActivity.this, new EasyImage.Callbacks() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
+
+            }
+
+            @Override
+            public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
+                if (list.size()>0) {
+                    switch (i) {
+                        case 101:
+                            File file = list.get(0);
+                            Uri uri = Uri.fromFile(file);
+                            //Glide.with(MainActivity.this).load(uri).into(imagen);
+
+                            //RAIZ REFERENCIA
+                            StorageReference raiz = mStorage.getReference();
+
+                            Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
+
+                            String exten = uriTemp.getLastPathSegment().substring(uriTemp.getLastPathSegment().indexOf("."));
+                            StorageReference nuevaFoto = raiz.child("recetas").child("user1" + exten);
+
+                            UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Toast.makeText(MainActivity.this, taskSnapshot.toString() + "Imagen", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCanceled(EasyImage.ImageSource imageSource, int i) {
+
+            }
+        });
+    }
 }

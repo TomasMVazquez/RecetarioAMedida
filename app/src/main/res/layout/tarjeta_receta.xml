@@ -9,7 +9,7 @@
     android:layout_marginTop="10dp"
     app:cardCornerRadius="25dp"
     android:id="@+id/cardViewReceta"
-    android:elevation="6dp"
+    android:elevation="4dp"
     >
 
     <LinearLayout
