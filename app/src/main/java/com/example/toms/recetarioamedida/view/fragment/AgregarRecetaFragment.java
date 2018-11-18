@@ -4,9 +4,11 @@ package com.example.toms.recetarioamedida.view.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
 import com.example.toms.recetarioamedida.model.Receta;
+import com.example.toms.recetarioamedida.view.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +53,7 @@ public class AgregarRecetaFragment extends Fragment {
     private FloatingActionButton agregarImagen;
     private FloatingActionButton agregarIngrediente;
     private FloatingActionButton agregarReceta;
+    private String rutaImagen;
 
     public AgregarRecetaFragment() {
         // Required empty public constructor
@@ -99,10 +103,18 @@ public class AgregarRecetaFragment extends Fragment {
         agregarImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyImage.openChooserWithGallery(getActivity(),"Elegir",101);
+                EasyImage.openChooserWithGallery(AgregarRecetaFragment.this,"Elegir",101);
             }
         });
 
+        agregarReceta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString());
+                agregarRecetaDatabase(nuevaReceta);
+                getActivity().getSupportFragmentManager().beginTransaction().remove(AgregarRecetaFragment.this).commit();
+            }
+        });
 
 
         return view;
@@ -111,6 +123,57 @@ public class AgregarRecetaFragment extends Fragment {
     public void agregarRecetaDatabase(Receta receta){
         DatabaseReference id = mReference.child("recetaList").push();
         id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento()));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new EasyImage.Callbacks() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
+
+            }
+
+            @Override
+            public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
+                if (list.size()>0) {
+                    switch (i) {
+                        case 101:
+                            File file = list.get(0);
+                            Uri uri = Uri.fromFile(file);
+                            Glide.with(getActivity()).load(uri).into(imagen);
+
+                            //RAIZ REFERENCIA
+                            StorageReference raiz = mStorage.getReference();
+
+                            final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
+
+                            //String exten = uriTemp.getLastPathSegment().substring(uriTemp.getLastPathSegment().indexOf("."));
+                            StorageReference nuevaFoto = raiz.child(getResources().getString(R.string.ruta_imagenes)).child(uriTemp.getLastPathSegment());
+
+                            UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    rutaImagen = uriTemp.getLastPathSegment();
+                                }
+                            });
+
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCanceled(EasyImage.ImageSource imageSource, int i) {
+
+            }
+        });
     }
 
 

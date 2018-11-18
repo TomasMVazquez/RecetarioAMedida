@@ -2,21 +2,22 @@ package com.example.toms.recetarioamedida.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Receta implements Serializable  {
 
     //Atributos
     private String id;
-    private Integer imagen;
+    private String imagen;
     private String titulo;
-    private ArrayList<String> ingredientes;
+    private List<String> ingredientes;
     private String procedimiento;
 
     //constructor
     public Receta() {
     }
 
-    public Receta(String id, Integer imagen, String titulo, ArrayList<String> ingredientes, String procedimiento) {
+    public Receta(String id, String imagen, String titulo, List<String> ingredientes, String procedimiento) {
         this.id = id;
         this.imagen = imagen;
         this.titulo = titulo;
@@ -34,17 +35,17 @@ public class Receta implements Serializable  {
 
     //toString
 
-
     @Override
     public String toString() {
         return "Receta{" +
-                "id=" + id +
-                ", imagen=" + imagen +
+                "id='" + id + '\'' +
+                ", imagen='" + imagen + '\'' +
                 ", titulo='" + titulo + '\'' +
                 ", ingredientes=" + ingredientes +
                 ", procedimiento='" + procedimiento + '\'' +
                 '}';
     }
+
 
     //getter
 
@@ -56,7 +57,7 @@ public class Receta implements Serializable  {
         return titulo;
     }
 
-    public ArrayList<String> getIngredientes() {
+    public List<String> getIngredientes() {
         return ingredientes;
     }
 
@@ -64,7 +65,7 @@ public class Receta implements Serializable  {
         return procedimiento;
     }
 
-    public Integer getImagen() {
+    public String getImagen() {
         return imagen;
     }
 }

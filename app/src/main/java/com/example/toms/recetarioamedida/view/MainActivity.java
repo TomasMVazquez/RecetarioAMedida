@@ -107,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Gerente
         mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance();
 
         frameText = findViewById(R.id.frameText);
 
@@ -216,54 +218,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        EasyImage.handleActivityResult(requestCode, resultCode, data, MainActivity.this, new EasyImage.Callbacks() {
-            @Override
-            public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
 
-            }
-
-            @Override
-            public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
-                if (list.size()>0) {
-                    switch (i) {
-                        case 101:
-                            File file = list.get(0);
-                            Uri uri = Uri.fromFile(file);
-                            //Glide.with(MainActivity.this).load(uri).into(imagen);
-
-                            //RAIZ REFERENCIA
-                            StorageReference raiz = mStorage.getReference();
-
-                            Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
-
-                            String exten = uriTemp.getLastPathSegment().substring(uriTemp.getLastPathSegment().indexOf("."));
-                            StorageReference nuevaFoto = raiz.child("recetas").child("user1" + exten);
-
-                            UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
-                            uploadTask.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    Toast.makeText(MainActivity.this, taskSnapshot.toString() + "Imagen", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                            break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCanceled(EasyImage.ImageSource imageSource, int i) {
-
-            }
-        });
-    }
 }

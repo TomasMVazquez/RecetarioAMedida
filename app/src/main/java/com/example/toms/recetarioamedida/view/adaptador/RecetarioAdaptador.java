@@ -128,7 +128,7 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
 
         //metodo del view holder para cargar datos
         public void cargar(Receta receta){
-            imagen.setImageResource(receta.getImagen());
+            imagen.setImageResource(R.drawable.recetas_logo);
             titulo.setText(receta.getTitulo());
             procedimiento.setText(receta.getProcedimiento());
         }
