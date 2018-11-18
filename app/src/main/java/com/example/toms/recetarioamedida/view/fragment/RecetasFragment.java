@@ -46,14 +46,16 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
         View view = inflater.inflate(R.layout.fragment_recetas, container, false);
 
         //Datos
-        ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
+//        ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
+//
+//        controllerFireBaseDataBase.entregarListaRecetas(new ResultListener<List<Receta>>() {
+//            @Override
+//            public void finish(List<Receta> results) {
+//                recetaList = results;
+//            }
+//        });
 
-        controllerFireBaseDataBase.entregarListaRecetas(new ResultListener<List<Receta>>() {
-            @Override
-            public void finish(List<Receta> results) {
-                recetaList = results;
-            }
-        });
+        recetaList = new ArrayList<>();
 
         //Recycler View
         RecyclerView recetasRecycler = view.findViewById(R.id.recyclerRecetas);

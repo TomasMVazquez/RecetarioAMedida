@@ -163,6 +163,9 @@ public class MainActivity extends AppCompatActivity {
         }else{
             super.onBackPressed();
         }
+
+
+
     }
 
     public void cargarFragment(Fragment fragment){
@@ -206,11 +209,11 @@ public class MainActivity extends AppCompatActivity {
     public void updateUI(FirebaseUser user){
 
         if (user != null) {
-            String name = user.getDisplayName() + " " + R.string.login_salir;
+            //String name = user.getDisplayName() + " " + R.string.login_salir;
             Uri uri = user.getPhotoUrl();
             //Glide.with(this).load(uri).into(imageView);
             frameText.setText(user.getDisplayName());
-            navigationView.getMenu().findItem(R.id.login).setTitle(name);
+            navigationView.getMenu().findItem(R.id.login).setTitle(R.string.login_salir);
 
         }else {
             //cargarFragment(logInFragment);

@@ -15,6 +15,7 @@ import com.example.toms.recetarioamedida.controller.SwipeAndDragHelper;
 import com.example.toms.recetarioamedida.model.Receta;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecetarioAdaptador extends RecyclerView.Adapter implements

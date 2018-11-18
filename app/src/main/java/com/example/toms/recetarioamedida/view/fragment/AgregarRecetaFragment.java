@@ -110,9 +110,14 @@ public class AgregarRecetaFragment extends Fragment {
         agregarReceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!addIngredientes.getText().toString().equals("")){
+                    ingredientes.add(addIngredientes.getText().toString());
+                }
+
                 Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString());
                 agregarRecetaDatabase(nuevaReceta);
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AgregarRecetaFragment.this).commit();
+
             }
         });
 
@@ -175,6 +180,5 @@ public class AgregarRecetaFragment extends Fragment {
             }
         });
     }
-
 
 }
