@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragment.AgregarRecetaFragment"
-    android:background="@color/colorBlank"
+    android:background="@color/colorWhite"
     >
 
     <ScrollView
@@ -55,12 +55,51 @@
                     />
             </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:id="@+id/ingredientesAgregados"
+            <Switch
+                android:id="@+id/switchVegano"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/es_vegan"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="10dp"
+                />
+            <Switch
+                android:id="@+id/switchVegetarian"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/es_vegetarian"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="10dp"
+                />
+            <Switch
+                android:id="@+id/switchTacc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/contiene_tacc"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="10dp"
+                />
+            <Switch
+                android:id="@+id/switchMani"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/contiene_mani"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="25dp"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout"
+                android:orientation="vertical"
                 />
 
             <LinearLayout

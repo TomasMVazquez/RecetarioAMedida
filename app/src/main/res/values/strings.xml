@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">RecetarioAMedida</string>
+    <string name="referencias">Referencias de las recetas</string>
 
     //NavigationView
-    <string name="nombre">Recetas a tus medidas</string>
+    <string name="nombre">Recetas a tu medida</string>
     <string name="recetas">Recetas</string>
     <string name="aboutUs">About Us</string>
     <string name="login_iniciar">Iniciar Sesión</string>
@@ -21,6 +22,10 @@
     <string name="hint_ingredientes">Ingredientes de la receta</string>
     <string name="hint_procedimiento">Procedimiento de la receta</string>
     <string name="agregar_imagen">Agregar imagen a la receta</string>
+    <string name="es_vegan">Receta Vegana</string>
+    <string name="es_vegetarian">Receta Vegetariana</string>
+    <string name="contiene_tacc">No contiene TACC</string>
+    <string name="contiene_mani">No contiene Maní</string>
 
     //LogIn
     <string name="continuar_sin_log">Continuar sin LogIn</string>

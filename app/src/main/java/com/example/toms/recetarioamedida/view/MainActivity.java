@@ -1,5 +1,6 @@
 package com.example.toms.recetarioamedida.view;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -8,11 +9,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +27,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
+import com.example.toms.recetarioamedida.controller.ControllerFireBaseDataBase;
+import com.example.toms.recetarioamedida.model.Receta;
+import com.example.toms.recetarioamedida.utils.ResultListener;
+import com.example.toms.recetarioamedida.utils.Util;
+import com.example.toms.recetarioamedida.view.adaptador.ViewPagerAdapter;
 import com.example.toms.recetarioamedida.view.fragment.AgregarRecetaFragment;
 import com.example.toms.recetarioamedida.view.fragment.LogInFragment;
+import com.example.toms.recetarioamedida.view.fragment.RecetaDetalleFragment;
 import com.example.toms.recetarioamedida.view.fragment.RecetasFragment;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -47,11 +58,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecetasFragment.OnFragmentRecetasNotify {
+
+    public static final int KEY_LOGIN=101;
 
     private TextView frameText;
     private ImageView imageView;
@@ -65,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
+    private ViewPagerAdapter adapter;
 
     @Override
     protected void onResume() {
@@ -107,15 +123,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Util.printHash(this);
+
         //Gerente
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
 
         frameText = findViewById(R.id.frameText);
 
+        //Toolbar
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+
         //NavigationView
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.navigation);
+
+        //Btn Hamburguesa
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -130,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseAuth.getInstance().signOut();
                             LoginManager.getInstance().logOut();
                             navigationView.getMenu().findItem(R.id.login).setTitle(R.string.login_iniciar);
+                            frameText.setText("");
                             currentUser = null;
                         }else{
                             cargarFragment(logInFragment);
@@ -158,14 +187,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        FragmentManager mFragmentManager = getSupportFragmentManager();
         if (drawerLayout.isDrawerOpen(Gravity.START)){
             drawerLayout.closeDrawers();
         }else{
-            super.onBackPressed();
+            if (mFragmentManager.getFragments().size() > 0){
+                eliminarFragment(mFragmentManager.getFragments().get(mFragmentManager.getFragments().size()-1));
+            }else {
+                super.onBackPressed();
+            }
         }
-
-
-
     }
 
     public void cargarFragment(Fragment fragment){
@@ -221,5 +252,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void irDetalleActividad(Receta receta, final Integer position) {
+        final List<Receta> recetaList = new ArrayList<>();
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        for (Fragment fragment:mFragmentManager.getFragments()) {
+            eliminarFragment(fragment);
+        }
 
+        //Lista de fragments
+        final List<Fragment> fragments = new ArrayList<>();
+        //Adapter
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),new ArrayList<Fragment>());
+        //Controller
+        ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
+
+        controllerFireBaseDataBase.entrgarTodasRecetas(new ResultListener<List<Receta>>() {
+            @Override
+            public void finish(List<Receta> results) {
+                recetaList.addAll(results);
+            }
+        });
+        //Progess dialog
+        final ProgressDialog prog= new ProgressDialog(this);
+        prog.setTitle("Por favor espere");
+        prog.setMessage("Estamos cargando sus recetas");
+        prog.setCancelable(false);
+        prog.setIndeterminate(true);
+        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        prog.show();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                for (Integer i = 0; i<recetaList.size();i++){
+                    fragments.add(RecetaDetalleFragment.giveReceta(getApplicationContext(),position,recetaList.get(i)));
+                }
+                adapter.setFragmentList(fragments);
+                //ViewPager
+                ViewPager viewPager = findViewById(R.id.viewPager);
+                viewPager.setAdapter(adapter);
+
+                //Inicializado
+                viewPager.setCurrentItem(position);
+                prog.dismiss();
+            }
+        }, 1000);
+    }
 }

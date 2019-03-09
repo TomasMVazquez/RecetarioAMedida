@@ -6,37 +6,139 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.MainActivity"
-    tools:openDrawer="start"
+
     android:id="@+id/drawer"
     >
 
-    <FrameLayout
-        android:id="@+id/container"
+    <!--tools:openDrawer="start"-->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
+        android:orientation="vertical"
         >
 
-        <ImageView
-            android:id="@+id/imagenFrame"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:src="@drawable/recetas_logo"
-            android:alpha="0.5"
+        <include
+            layout="@layout/toolbar"
             />
 
-        <TextView
-            android:id="@+id/frameText"
-            android:layout_gravity="center"
-            android:gravity="center"
+        <FrameLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Estas en el Frame"
-            android:textSize="25sp"
-            />
+            android:layout_height="match_parent"
+            >
 
-    </FrameLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/referencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/referencias"
+                    android:textColor="@color/colorBlack"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/refVegan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/vegan_icon"
+                    android:layout_marginStart="10dp"
+                    android:layout_below="@id/referencia"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/refVegan"
+                    android:layout_below="@id/referencia"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/es_vegan"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+
+                <ImageView
+                    android:id="@+id/refVegetarian"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/vegetarian"
+                    android:layout_marginStart="10dp"
+                    android:layout_below="@id/refVegan"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/refVegetarian"
+                    android:layout_below="@id/refVegan"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/es_vegetarian"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+                <ImageView
+                    android:id="@+id/refTacc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/sintacc"
+                    android:layout_marginStart="10dp"
+                    android:layout_below="@id/refVegetarian"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/refTacc"
+                    android:layout_below="@id/refVegetarian"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/contiene_tacc"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+                <ImageView
+                    android:id="@+id/refMani"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/peanut_peanut"
+                    android:layout_marginStart="10dp"
+                    android:layout_below="@id/refTacc"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/refMani"
+                    android:layout_below="@id/refTacc"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/contiene_mani"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/imagenFrame"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:src="@drawable/recetas_logo"
+                android:alpha="0.5"
+                />
+
+            <TextView
+                android:id="@+id/frameText"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="25sp"
+                />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </FrameLayout>
+    </LinearLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"

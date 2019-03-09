@@ -11,6 +11,16 @@ public class ControllerFireBaseDataBase {
 
     private List<Receta> recetaList = new ArrayList<>();
 
+    public void entrgarTodasRecetas(final ResultListener<List<Receta>> listResultListener){
+        DaoFireBaseDataBase daoFireBaseDataBase = new DaoFireBaseDataBase();
+        daoFireBaseDataBase.dameTodasRecetas(new ResultListener<List<Receta>>() {
+            @Override
+            public void finish(List<Receta> results) {
+                listResultListener.finish(results);
+            }
+        });
+    }
+
     public void entregarListaRecetas(final ResultListener<List<Receta>> listResultListener){
 
         DaoFireBaseDataBase daoFireBaseDataBase = new DaoFireBaseDataBase();

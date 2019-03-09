@@ -1,4 +1,4 @@
-package com.example.toms.recetarioamedida.controller;
+package com.example.toms.recetarioamedida.utils;
 
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;

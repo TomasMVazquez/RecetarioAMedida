@@ -24,6 +24,28 @@ public class DaoFireBaseDataBase {
     private List<Receta> recetaList = new ArrayList<>();
     private RecetaContenedor recetaContenedor;
 
+    public void dameTodasRecetas(final ResultListener<List<Receta>> listResultListener){
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference  = mDatabase.getReference();
+
+        mReference.child("recetaList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Receta addReceta = childSnapShot.getValue(Receta.class);
+                    recetaList.add(addReceta);
+                }
+                listResultListener.finish(recetaList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     public void dameRecetas(final ResultListener<List<Receta>> listenerDelController){
         mDatabase = FirebaseDatabase.getInstance();
         mReference  = mDatabase.getReference();

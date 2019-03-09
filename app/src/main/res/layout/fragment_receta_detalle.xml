@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.fragment.RecetaDetalleFragment"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/nombreReceta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Titulo Receta"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                />
+
+            <ImageView
+                android:id="@+id/imagenReceta"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginBottom="25dp"
+                android:src="@drawable/recetas_logo"
+                android:scaleType="fitCenter"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ingredientes"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayoutReceta"
+                android:orientation="vertical"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/procedimiento"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                />
+
+            <TextView
+                android:id="@+id/procedimientoReceta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Procedimiento Receta"
+                android:gravity="left"
+                android:textSize="15sp"
+                android:textColor="@color/colorBlack"
+                android:layout_marginBottom="5dp"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

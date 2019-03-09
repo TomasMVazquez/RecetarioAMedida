@@ -3,7 +3,6 @@ package com.example.toms.recetarioamedida.view.adaptador;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -14,21 +13,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
-import com.example.toms.recetarioamedida.controller.SwipeAndDragHelper;
+import com.example.toms.recetarioamedida.utils.SwipeAndDragHelper;
 import com.example.toms.recetarioamedida.model.Receta;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecetarioAdaptador extends RecyclerView.Adapter implements
@@ -184,6 +178,22 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
             procedimiento.setText(receta.getProcedimiento());
         }
 
+    }
+
+    //--------Metodo para eliminar recetas con el Swipe----------------------------------------//
+    public void eliminarReceta (int posicion){
+//        mDatabase = FirebaseDatabase.getInstance();
+//        mReference = mDatabase.getReference();
+//        final DatabaseReference deviceDb = mReference.child(MainActivity.showId()).child(context.getResources().getString(R.string.device_reference_child)).child(deviceList.get(posicion).getId());
+//        deviceDb.removeValue();
+        recetasList.remove(posicion);
+        notifyItemRemoved(posicion);
+    }
+
+    //--------Metodo para volver a agregar la receta que se elimino------------------------------//
+    public void noRemoverReceta (Receta receta, int posicion){
+        recetasList.add(posicion,receta);
+        notifyItemInserted(posicion);
     }
 
 }

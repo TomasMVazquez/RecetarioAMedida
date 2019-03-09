@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="@string/nombre"
         android:textSize="18sp"
-        android:textColor="@color/colorBlank"
+        android:textColor="@color/colorWhite"
         android:textStyle="bold"
         />
 

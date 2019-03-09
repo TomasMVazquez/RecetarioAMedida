@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +49,10 @@ public class AgregarRecetaFragment extends Fragment {
     private DatabaseReference mReference;
     private FirebaseStorage mStorage;
 
+    private LinearLayout linearLayout;
     private EditText titulo;
     private List<String> ingredientes = new ArrayList<>();
-    private TextView ingredientesAgregados;
+    private TextView ingredientesInflados;
     private EditText addIngredientes;
     private EditText procedimiento;
     private ImageView imagen;
@@ -77,9 +81,9 @@ public class AgregarRecetaFragment extends Fragment {
         //Raiz del Storage
         StorageReference raiz = mStorage.getReference();
 
+        linearLayout = view.findViewById(R.id.linearLayout);
         imagen = view.findViewById(R.id.imagenAgregada);
         titulo = view.findViewById(R.id.addTitulo);
-        ingredientesAgregados = view.findViewById(R.id.ingredientesAgregados);
         procedimiento = view.findViewById(R.id.addProcedimiento);
         addIngredientes = view.findViewById(R.id.addIngredientes);
 
@@ -93,9 +97,13 @@ public class AgregarRecetaFragment extends Fragment {
                 String ingred = addIngredientes.getText().toString();
                 if (!addIngredientes.getText().toString().equals("")){
                     ingredientes.add(addIngredientes.getText().toString());
-                    String ingrediente = ingredientesAgregados.getText().toString() + addIngredientes.getText().toString() + "; ";
-                    ingredientesAgregados.setText(ingrediente);
+
+                    ingredientesInflados = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.ingrediente,null);
+                    ingredientesInflados.setText(ingred);
+                    linearLayout.addView(ingredientesInflados);
+
                     addIngredientes.setText("");
+
                 }else {
                     Toast.makeText(view.getContext(), "No hay ingredientes para agregar", Toast.LENGTH_SHORT).show();
                 }

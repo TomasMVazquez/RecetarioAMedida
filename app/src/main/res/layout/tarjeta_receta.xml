@@ -35,22 +35,63 @@
             android:layout_marginLeft="5dp"
             >
 
-            <TextView
-                android:id="@+id/recetaTitulo"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titulo"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorAccent"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/recetaTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titulo"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"
+                    android:layout_alignParentStart="true"
+                    />
+
+                <ImageView
+                    android:id="@+id/ivTacc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/sintacc"
+                    android:visibility="invisible"
+                    />
+                <ImageView
+                android:id="@+id/ivVegan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/ivTacc"
+                android:src="@drawable/vegan_icon"
+                android:visibility="invisible"
                 />
+                <ImageView
+                    android:id="@+id/ivVegetarian"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/ivVegan"
+                    android:src="@drawable/vegetarian"
+                    android:visibility="invisible"
+                    />
+                <ImageView
+                    android:id="@+id/ivPeanut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/ivVegetarian"
+                    android:src="@drawable/peanut_peanut"
+                    android:visibility="invisible"
+                    />
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="15sp"
-                android:text="@string/procedimiento"
+                android:text="@string/ingredientes"
                 android:textStyle="bold"
                 />
 
@@ -60,7 +101,7 @@
                 android:layout_height="match_parent"
                 android:textColor="@color/colorPrimary"
                 android:textSize="12sp"
-                android:text="@string/procedimiento"
+                android:text="@string/ingredientes"
                 android:maxLines="3"
                 android:ellipsize="end"
                 />
