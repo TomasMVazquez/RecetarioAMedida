@@ -116,6 +116,7 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
             @Override
             public void onClick(View v) {
                 //TODO Agregar en este boton un activity for results para que vuelva
+                getActivity().getSupportFragmentManager().beginTransaction().remove(RecetasFragment.this).commit();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,agregarRecetaFragment).commit();
             }
         });

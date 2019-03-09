@@ -127,6 +127,10 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
         //Atributos
         private TextView titulo;
         private ImageView imagen;
+        private ImageView vegan;
+        private ImageView vegetarian;
+        private ImageView tacc;
+        private ImageView mani;
         private TextView procedimiento;
 
 
@@ -136,6 +140,10 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
             imagen = itemView.findViewById(R.id.recetaImagen);
             titulo = itemView.findViewById(R.id.recetaTitulo);
             procedimiento = itemView.findViewById(R.id.recetaProcedimiento);
+            vegan = itemView.findViewById(R.id.ivVegan);
+            vegetarian = itemView.findViewById(R.id.ivVegetarian);
+            tacc = itemView.findViewById(R.id.ivTacc);
+            mani = itemView.findViewById(R.id.ivPeanut);
 
             //poner listener al item para ir al detalle
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +184,18 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
             //imagen.setImageResource(R.drawable.recetas_logo);
             titulo.setText(receta.getTitulo());
             procedimiento.setText(receta.getProcedimiento());
+            if (receta.getVegan()) {
+                vegan.setVisibility(View.VISIBLE);
+            }
+            if (receta.getTacc()){
+                tacc.setVisibility(View.VISIBLE);
+            }
+            if (receta.getMani()){
+                mani.setVisibility(View.VISIBLE);
+            }
+            if (receta.getVegetarian()){
+                vegetarian.setVisibility(View.VISIBLE);
+            }
         }
 
     }

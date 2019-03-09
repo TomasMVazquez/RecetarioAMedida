@@ -12,9 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +63,10 @@ public class AgregarRecetaFragment extends Fragment {
     private FloatingActionButton agregarReceta;
     private String rutaImagen;
     private Integer position;
+    private Switch switchVegano;
+    private Switch switchTacc;
+    private Switch switchMani;
+    private Switch switchVegetarian;
 
     public AgregarRecetaFragment() {
         // Required empty public constructor
@@ -86,6 +92,10 @@ public class AgregarRecetaFragment extends Fragment {
         titulo = view.findViewById(R.id.addTitulo);
         procedimiento = view.findViewById(R.id.addProcedimiento);
         addIngredientes = view.findViewById(R.id.addIngredientes);
+        switchVegano = view.findViewById(R.id.switchVegano);
+        switchTacc = view.findViewById(R.id.switchTacc);
+        switchMani = view.findViewById(R.id.switchMani);
+        switchVegetarian = view.findViewById(R.id.switchVegetarian);
 
         agregarImagen = view.findViewById(R.id.agregarImagen);
         agregarIngrediente = view.findViewById(R.id.agregarIngrediente);
@@ -110,6 +120,15 @@ public class AgregarRecetaFragment extends Fragment {
             }
         });
 
+        switchVegano.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    switchVegetarian.setChecked(true);
+                }
+            }
+        });
+
         agregarImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +143,7 @@ public class AgregarRecetaFragment extends Fragment {
                     ingredientes.add(addIngredientes.getText().toString());
                 }
 
-                Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString());
+                Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString(),switchVegano.isChecked(),switchTacc.isChecked(),switchMani.isChecked(),switchVegetarian.isChecked());
                 agregarRecetaDatabase(nuevaReceta);
 
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AgregarRecetaFragment.this).commit();
@@ -138,7 +157,7 @@ public class AgregarRecetaFragment extends Fragment {
 
     public void agregarRecetaDatabase(final Receta receta){
         DatabaseReference id = mReference.child("recetaList").push();
-        id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento()));
+        id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento(),receta.getVegan(),receta.getTacc(),receta.getMani(),switchVegetarian.isChecked()));
     }
 
     @Override

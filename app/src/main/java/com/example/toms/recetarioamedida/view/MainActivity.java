@@ -172,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
 
                     case R.id.aboutUs:
                         //cargar fragments
+                        //TODO HAcer este fragment
+                        Toast.makeText(MainActivity.this, "Seccion en construccion", Toast.LENGTH_SHORT).show();
                         return true;
                 }
 
