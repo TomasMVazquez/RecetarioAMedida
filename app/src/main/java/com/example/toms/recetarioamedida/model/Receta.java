@@ -17,12 +17,14 @@ public class Receta implements Serializable  {
     private Boolean vegetarian;
     private Boolean tacc;
     private Boolean mani;
+    private Boolean publicRec;
+    private Boolean favorite;
 
     //constructor
     public Receta() {
     }
 
-    public Receta(String id, String imagen, String titulo, List<String> ingredientes, String procedimiento, Boolean vegan, Boolean tacc, Boolean mani, Boolean vegetarian) {
+    public Receta(String id, String imagen, String titulo, List<String> ingredientes, String procedimiento, Boolean vegan, Boolean tacc, Boolean mani, Boolean vegetarian, Boolean publicRec, Boolean favorite) {
         this.id = id;
         this.imagen = imagen;
         this.titulo = titulo;
@@ -32,6 +34,8 @@ public class Receta implements Serializable  {
         this.vegetarian = vegetarian;
         this.tacc = tacc;
         this.mani = mani;
+        this.publicRec = publicRec;
+        this.favorite = favorite;
     }
 
     public Receta(Receta receta) {
@@ -44,6 +48,8 @@ public class Receta implements Serializable  {
         this.tacc = receta.tacc;
         this.mani = receta.mani;
         this.vegetarian = receta.vegetarian;
+        this.publicRec = receta.publicRec;
+        this.favorite = receta.favorite;
     }
 
     //toString
@@ -99,5 +105,13 @@ public class Receta implements Serializable  {
 
     public Boolean getVegetarian() {
         return vegetarian;
+    }
+
+    public Boolean getPublicRec() {
+        return publicRec;
+    }
+
+    public Boolean getFavorite() {
+        return favorite;
     }
 }

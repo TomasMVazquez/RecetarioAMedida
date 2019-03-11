@@ -34,7 +34,6 @@
             android:orientation="vertical"
             android:layout_marginLeft="5dp"
             >
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,6 +48,31 @@
                     android:textStyle="bold"
                     android:textColor="@color/colorAccent"
                     android:layout_alignParentStart="true"
+                    android:ellipsize="marquee"
+                    />
+                <ImageView
+                    android:id="@+id/ivFav"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_favorite_border_black_24dp"
+                    />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:id="@+id/ivPublic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_local_florist_black_24dp"
+                    android:visibility="visible"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
                     />
 
                 <ImageView
@@ -61,13 +85,13 @@
                     android:visibility="invisible"
                     />
                 <ImageView
-                android:id="@+id/ivVegan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/ivTacc"
-                android:src="@drawable/vegan_icon"
-                android:visibility="invisible"
-                />
+                    android:id="@+id/ivVegan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/ivTacc"
+                    android:src="@drawable/vegan_icon"
+                    android:visibility="invisible"
+                    />
                 <ImageView
                     android:id="@+id/ivVegetarian"
                     android:layout_width="wrap_content"

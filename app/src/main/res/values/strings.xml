@@ -4,7 +4,9 @@
 
     //NavigationView
     <string name="nombre">Recetas a tu medida</string>
-    <string name="recetas">Recetas</string>
+    <string name="recetas">Recetas públicas</string>
+    <string name="mis_recetas">Mis recetas</string>
+    <string name="favoritos">Mis recetas favoritas</string>
     <string name="aboutUs">About Us</string>
     <string name="login_iniciar">Iniciar Sesión</string>
     <string name="login_salir">Salir</string>
@@ -15,6 +17,10 @@
     <string name="titulo">Titulo</string>
     <string name="ingredientes">Ingredientes</string>
     <string name="procedimiento">Procedimiento</string>
+
+    //Detalle
+    <string name="tvUpload">Hacer receta pública</string>
+    <string name="tvDownload">Dejar de publicar</string>
 
     //AgregarReceta
     <string name="titulo_fragment_agregar">Ingresar nueva Receta</string>
@@ -37,5 +43,8 @@
     //Storage
     <string name="ruta_imagenes">recetas</string>
     <string name="ruta_database">recetaList</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

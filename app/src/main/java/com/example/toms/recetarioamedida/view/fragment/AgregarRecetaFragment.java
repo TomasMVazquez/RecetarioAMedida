@@ -129,6 +129,7 @@ public class AgregarRecetaFragment extends Fragment {
             }
         });
 
+        //TODO no esta funcionando la parte de subir la foto
         agregarImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,7 +144,7 @@ public class AgregarRecetaFragment extends Fragment {
                     ingredientes.add(addIngredientes.getText().toString());
                 }
 
-                Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString(),switchVegano.isChecked(),switchTacc.isChecked(),switchMani.isChecked(),switchVegetarian.isChecked());
+                Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString(),switchVegano.isChecked(),switchTacc.isChecked(),switchMani.isChecked(),switchVegetarian.isChecked(),false,false);
                 agregarRecetaDatabase(nuevaReceta);
 
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AgregarRecetaFragment.this).commit();
@@ -156,8 +157,15 @@ public class AgregarRecetaFragment extends Fragment {
     }
 
     public void agregarRecetaDatabase(final Receta receta){
-        DatabaseReference id = mReference.child("recetaList").push();
-        id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento(),receta.getVegan(),receta.getTacc(),receta.getMani(),switchVegetarian.isChecked()));
+        DatabaseReference id;
+//        if (MainActivity.isLogon(getContext())){
+//            String miDataBase = MainActivity.dataBaseID(getContext());
+//            id = mReference.child(miDataBase).push();
+//        }else {
+            id = mReference.child("recetaList").push();
+//        }
+
+        id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento(),receta.getVegan(),receta.getTacc(),receta.getMani(),switchVegetarian.isChecked(),false,false));
     }
 
     @Override
@@ -180,7 +188,7 @@ public class AgregarRecetaFragment extends Fragment {
                         case 101:
                             File file = list.get(0);
                             Uri uri = Uri.fromFile(file);
-                            Glide.with(getActivity()).load(uri).into(imagen);
+                            Glide.with(getContext()).load(uri).into(imagen);
 
                             final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
 
@@ -191,7 +199,7 @@ public class AgregarRecetaFragment extends Fragment {
                             uploadTask.addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-
+                                    Toast.makeText(getContext(), "Error al cargar imagen", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override

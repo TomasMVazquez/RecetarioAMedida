@@ -3,6 +3,7 @@ package com.example.toms.recetarioamedida.view.adaptador;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
     private Integer i;
+
 
     //Constructor
     public RecetarioAdaptador(List<Receta> recetasList, AdaptadorInterface escuchador) {
@@ -131,8 +133,10 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
         private ImageView vegetarian;
         private ImageView tacc;
         private ImageView mani;
+        private ImageView publicRec;
+        private ImageView ivFav;
         private TextView procedimiento;
-
+        private String ingredientes;
 
         //constructor
         public RecetaViewHolder(@NonNull View itemView) {
@@ -144,6 +148,8 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
             vegetarian = itemView.findViewById(R.id.ivVegetarian);
             tacc = itemView.findViewById(R.id.ivTacc);
             mani = itemView.findViewById(R.id.ivPeanut);
+            publicRec = itemView.findViewById(R.id.ivPublic);
+            ivFav = itemView.findViewById(R.id.ivFav);
 
             //poner listener al item para ir al detalle
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +157,7 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
                 public void onClick(View v) {
                     Receta receta = recetasList.get(getAdapterPosition());
                     Integer position = recetasList.indexOf(receta);
+
                     escuchador.irDetalle(receta, position);
                 }
             });
@@ -181,9 +188,19 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
             }else {
                 Glide.with(context).load(R.drawable.recetas_logo).into(imagen);
             }
+
+            ingredientes = "";
+            for (String ingred:receta.getIngredientes()) {
+                if (ingred.equals(receta.getIngredientes().get(0))){
+                    ingredientes = ingred;
+                }else {
+                    ingredientes = ingredientes + " - " + ingred;
+                }
+            }
             //imagen.setImageResource(R.drawable.recetas_logo);
             titulo.setText(receta.getTitulo());
-            procedimiento.setText(receta.getProcedimiento());
+            procedimiento.setText(ingredientes);
+
             if (receta.getVegan()) {
                 vegan.setVisibility(View.VISIBLE);
             }
@@ -195,6 +212,16 @@ public class RecetarioAdaptador extends RecyclerView.Adapter implements
             }
             if (receta.getVegetarian()){
                 vegetarian.setVisibility(View.VISIBLE);
+            }
+            if (receta.getPublicRec()){
+                publicRec.setImageDrawable(context.getResources().getDrawable(R.drawable.book_shelf));
+            }else {
+                publicRec.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_local_florist_black_24dp));
+            }
+            if (receta.getFavorite()){
+                ivFav.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+            }else {
+                ivFav.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
             }
         }
 

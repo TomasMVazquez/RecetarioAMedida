@@ -15,27 +15,24 @@ import android.view.ViewGroup;
 
 import com.example.toms.recetarioamedida.R;
 import com.example.toms.recetarioamedida.controller.ControllerFireBaseDataBase;
-import com.example.toms.recetarioamedida.utils.SwipeAndDragHelper;
 import com.example.toms.recetarioamedida.model.Receta;
 import com.example.toms.recetarioamedida.utils.ResultListener;
+import com.example.toms.recetarioamedida.utils.SwipeAndDragHelper;
 import com.example.toms.recetarioamedida.view.adaptador.RecetarioAdaptador;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecetasFragment extends Fragment implements RecetarioAdaptador.AdaptadorInterface {
-
-    public static final String KEY_BUSCAR = "buscar";
+public class MisRecetasFragment extends Fragment implements RecetarioAdaptador.AdaptadorInterface {
 
     private List<Receta> recetaList = new ArrayList<>();
     private RecetarioAdaptador recetarioAdaptador;
 
-    public RecetasFragment() {
+
+    public MisRecetasFragment() {
         // Required empty public constructor
     }
 
@@ -44,14 +41,15 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recetas, container, false);
+        View view = inflater.inflate(R.layout.fragment_mis_recetas, container, false);
+
 
         recetarioAdaptador = new RecetarioAdaptador(new ArrayList<Receta>(),this);
 
         //Datos
         ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
 
-        controllerFireBaseDataBase.entrgarTodasRecetas(new ResultListener<List<Receta>>() {
+        controllerFireBaseDataBase.entrgarMisRecetas(getContext(),new ResultListener<List<Receta>>() {
             @Override
             public void finish(List<Receta> results) {
                 if (results.size()>0) {
@@ -62,7 +60,7 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
         });
 
         //Recycler View
-        RecyclerView recetasRecycler = view.findViewById(R.id.recyclerRecetas);
+        RecyclerView recetasRecycler = view.findViewById(R.id.miRecyclerRecetas);
         recetasRecycler.setHasFixedSize(true);
 
         //LinearLayoutManager
@@ -112,12 +110,12 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
         //FabAgregarReceta
         //TODO Cambiar la forma que voy de fragment en fragment directo. Pasar por El Main con escuchadores
         final AgregarRecetaFragment agregarRecetaFragment = new AgregarRecetaFragment();
-        FloatingActionButton fabAddReceta = view.findViewById(R.id.fabAddReceta);
+        FloatingActionButton fabAddReceta = view.findViewById(R.id.fabAddMiReceta);
         fabAddReceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().remove(RecetasFragment.this).commit();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,agregarRecetaFragment).commit();
+//                getActivity().getSupportFragmentManager().beginTransaction().remove(MisRecetasFragment.this).commit();
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,agregarRecetaFragment).commit();
             }
         });
 
@@ -127,12 +125,11 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
 
     @Override
     public void irDetalle(Receta receta, Integer position) {
-        OnFragmentRecetasNotify onFragmentRecetasNotify = (OnFragmentRecetasNotify) getContext();
-        onFragmentRecetasNotify.irDetalleActividad(receta, position);
+        OnFragmentMisRecetasNotify onFragmentMisRecetasNotify = (OnFragmentMisRecetasNotify) getContext();
+        onFragmentMisRecetasNotify.irMiDetalleActividad(receta,position);
     }
 
-    public interface OnFragmentRecetasNotify{
-        public void irDetalleActividad(Receta receta, Integer position);
+    public interface OnFragmentMisRecetasNotify{
+        public void irMiDetalleActividad(Receta receta, Integer position);
     }
-
 }

@@ -8,7 +8,16 @@
 
     <item android:id="@+id/recetas"
         android:title="@string/recetas"
+        android:icon="@drawable/book_shelf"/>
+
+    <item android:id="@+id/misRecetas"
+        android:title="@string/mis_recetas"
         android:icon="@drawable/ic_local_florist_black_24dp"/>
+
+    <item android:id="@+id/favoritos"
+        android:title="@string/favoritos"
+        android:icon="@drawable/ic_favorite_black_24dp"
+        />
 
     <item
         android:id="@+id/aboutUs"

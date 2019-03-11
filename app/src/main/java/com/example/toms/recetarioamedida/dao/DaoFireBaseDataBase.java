@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.example.toms.recetarioamedida.model.Receta;
 import com.example.toms.recetarioamedida.model.RecetaContenedor;
 import com.example.toms.recetarioamedida.utils.ResultListener;
+import com.example.toms.recetarioamedida.view.MainActivity;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,38 +47,23 @@ public class DaoFireBaseDataBase {
 
     }
 
-    public void dameRecetas(final ResultListener<List<Receta>> listenerDelController){
+    public void dameMisRecetas(Context context,final ResultListener<List<Receta>> listResultListener){
         mDatabase = FirebaseDatabase.getInstance();
         mReference  = mDatabase.getReference();
+        String miDataBase = MainActivity.dataBaseID(context);
 
-        mReference.child("recetaList").addChildEventListener(new ChildEventListener() {
+        mReference.child(miDataBase).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Receta receta = dataSnapshot.getValue(Receta.class);
-                recetaList.add(receta);
-                listenerDelController.finish(recetaList);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Receta addReceta = childSnapShot.getValue(Receta.class);
+                    recetaList.add(addReceta);
+                }
+                listResultListener.finish(recetaList);
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Receta receta = dataSnapshot.getValue(Receta.class);
-                recetaList.remove(receta);
-                listenerDelController.finish(recetaList);
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

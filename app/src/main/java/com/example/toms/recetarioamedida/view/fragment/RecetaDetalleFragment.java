@@ -21,6 +21,7 @@ import com.example.toms.recetarioamedida.R;
 import com.example.toms.recetarioamedida.controller.ControllerFireBaseDataBase;
 import com.example.toms.recetarioamedida.model.Receta;
 import com.example.toms.recetarioamedida.utils.ResultListener;
+import com.example.toms.recetarioamedida.view.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -40,13 +41,22 @@ public class RecetaDetalleFragment extends Fragment {
     public static final String KEY_POSITION = "position";
 
     private static Context context;
+    private StorageReference raiz;
+    private FirebaseStorage mStorage;
+    private DatabaseReference mReference;
+    private TextView nombreReceta;
+    private TextView procedimientoReceta;
+    private ImageView imagenReceta;
+    private LinearLayout linearLayoutReceta;
+    private static String deDondeVengo;
 
     public RecetaDetalleFragment() {
         // Required empty public constructor
     }
 
     //Constructor
-    public static RecetaDetalleFragment giveReceta(Context contextView,int fragmentNumber, Receta receta){
+    public static RecetaDetalleFragment giveReceta(Context contextView,int fragmentNumber, Receta receta, String fromWhere){
+        deDondeVengo = fromWhere;
         context = contextView;
         RecetaDetalleFragment recetaDetalle = new RecetaDetalleFragment();
         Bundle args = new Bundle();
@@ -65,63 +75,80 @@ public class RecetaDetalleFragment extends Fragment {
         final String idRec = bundle.getString(KEY_RECETA);
 
         final List<Receta> recetaList = new ArrayList<>();
+        final List<Receta> miRecetaList = new ArrayList<>();
 
         //firebase
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReference = mDatabase.getReference();
+        mReference = mDatabase.getReference();
         //Gerente
-        FirebaseStorage mStorage = FirebaseStorage.getInstance();
+        mStorage = FirebaseStorage.getInstance();
         //Raiz del Storage
-        final StorageReference raiz = mStorage.getReference();
+        raiz = mStorage.getReference();
 
-        final TextView nombreReceta = view.findViewById(R.id.nombreReceta);
-        final TextView procedimientoReceta = view.findViewById(R.id.procedimientoReceta);
-        final ImageView imagenReceta = view.findViewById(R.id.imagenReceta);
-        final LinearLayout linearLayoutReceta = view.findViewById(R.id.linearLayoutReceta);
+        nombreReceta = view.findViewById(R.id.nombreReceta);
+        procedimientoReceta = view.findViewById(R.id.procedimientoReceta);
+        imagenReceta = view.findViewById(R.id.imagenReceta);
+        linearLayoutReceta = view.findViewById(R.id.linearLayoutReceta);
 
         ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
-        controllerFireBaseDataBase.entrgarTodasRecetas(new ResultListener<List<Receta>>() {
-            @Override
-            public void finish(List<Receta> results) {
-                recetaList.addAll(results);
 
-                for (Receta nvaReceta: recetaList) {
-                    if (nvaReceta.getId().equals(idRec)){
-                        if(nvaReceta.getImagen()!=null) {
-                            StorageReference imagenReference = raiz.child(context.getResources().getString(R.string.ruta_imagenes)).child(nvaReceta.getImagen());
-                            imagenReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Glide.with(context).load(uri).into(imagenReceta);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(context, "ERROR IMAGEN", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                            }
-                        }, 1000);
-
-                        nombreReceta.setText(nvaReceta.getTitulo());
-                        procedimientoReceta.setText(nvaReceta.getProcedimiento());
-
-                        for (int i = 0; i < nvaReceta.getIngredientes().size() ; i++) {
-                            TextView ingredientesInflados = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.ingrediente,null);
-                            ingredientesInflados.setText(nvaReceta.getIngredientes().get(i));
-                            linearLayoutReceta.addView(ingredientesInflados);
-                        }
-                    }
+        if (deDondeVengo.equals("Mias")) {
+            controllerFireBaseDataBase.entrgarMisRecetas(getContext(), new ResultListener<List<Receta>>() {
+                @Override
+                public void finish(List<Receta> results) {
+                    miRecetaList.addAll(results);
+                    mostrar(miRecetaList, idRec);
                 }
-            }
-        });
+            });
+        }else {
+            controllerFireBaseDataBase.entrgarTodasRecetas(new ResultListener<List<Receta>>() {
+                @Override
+                public void finish(List<Receta> results) {
+                    recetaList.addAll(results);
+                    mostrar(recetaList,idRec);
+                }
+            });
+        }
 
         return view;
+    }
+
+    public void mostrar(List<Receta> recetaList, String idRec){
+        for (Receta nvaReceta: recetaList) {
+            if (nvaReceta.getId().equals(idRec)){
+                if(nvaReceta.getImagen()!=null) {
+                    StorageReference imagenReference = raiz.child(context.getResources().getString(R.string.ruta_imagenes)).child(nvaReceta.getImagen());
+                    imagenReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(context).load(uri).into(imagenReceta);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, "ERROR IMAGEN", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                    }
+                }, 1000);
+
+                nombreReceta.setText(nvaReceta.getTitulo());
+                procedimientoReceta.setText(nvaReceta.getProcedimiento());
+
+                for (int i = 0; i < nvaReceta.getIngredientes().size() ; i++) {
+                    TextView ingredientesInflados = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.ingrediente,null);
+                    ingredientesInflados.setText(nvaReceta.getIngredientes().get(i));
+                    linearLayoutReceta.addView(ingredientesInflados);
+                }
+            }else {
+                Toast.makeText(context, "Error al querer buscar una receta", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }

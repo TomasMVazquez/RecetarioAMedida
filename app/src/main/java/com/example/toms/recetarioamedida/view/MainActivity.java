@@ -1,6 +1,7 @@
 package com.example.toms.recetarioamedida.view;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import com.example.toms.recetarioamedida.utils.Util;
 import com.example.toms.recetarioamedida.view.adaptador.ViewPagerAdapter;
 import com.example.toms.recetarioamedida.view.fragment.AgregarRecetaFragment;
 import com.example.toms.recetarioamedida.view.fragment.LogInFragment;
+import com.example.toms.recetarioamedida.view.fragment.MisRecetasFragment;
 import com.example.toms.recetarioamedida.view.fragment.RecetaDetalleFragment;
 import com.example.toms.recetarioamedida.view.fragment.RecetasFragment;
 import com.facebook.AccessToken;
@@ -63,7 +65,7 @@ import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class MainActivity extends AppCompatActivity implements RecetasFragment.OnFragmentRecetasNotify {
+public class MainActivity extends AppCompatActivity implements RecetasFragment.OnFragmentRecetasNotify, MisRecetasFragment.OnFragmentMisRecetasNotify{
 
     public static final int KEY_LOGIN=101;
 
@@ -73,49 +75,43 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
 
     private LogInFragment logInFragment = new LogInFragment();
     private RecetasFragment recetasFragment = new RecetasFragment();
+    private MisRecetasFragment misRecetasFragment = new MisRecetasFragment();
 
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
-    private FirebaseUser currentUser;
+    private static FirebaseUser currentUser;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
     private ViewPagerAdapter adapter;
 
+    private static String idDataBase;
+
+
     @Override
     protected void onResume() {
         super.onResume();
 
+        //TODO HACER PUBLICAS RECETAS (AGREGAR NOMBRE USUARIO) Y AGREGAR FAVORITOS DE LAS RECETAS PUBLICAS
         mAuth = FirebaseAuth.getInstance();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Handler handler = new Handler();
-
         if (accessToken != null){
-
             handleFacebookAccessToken(accessToken);
-
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
 
                     currentUser = mAuth.getCurrentUser();
-
                     if (currentUser != null){
                         //si salio y volvio pero esta logeado que cargar
                         eliminarFragment(logInFragment);
-
+                        cargarFragment(misRecetasFragment);
                     }
-
                 }
-
             }, 3000);
-
             updateUI(currentUser);
-
-        }else {
-            cargarFragment(logInFragment);
         }
-
     }
 
     @Override
@@ -148,11 +144,9 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
                 drawerLayout.closeDrawers();
-
+                FragmentManager mFragmentManager = getSupportFragmentManager();
                 switch (menuItem.getItemId()){
-
                     case R.id.login:
                         if (currentUser != null){
                             FirebaseAuth.getInstance().signOut();
@@ -168,6 +162,14 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
                     case R.id.recetas:
                         //cargar fragments
                         cargarFragment(recetasFragment);
+                        return true;
+
+                    case R.id.misRecetas:
+                        cargarFragment(misRecetasFragment);
+                        return true;
+
+                    case R.id.favoritos:
+
                         return true;
 
                     case R.id.aboutUs:
@@ -242,9 +244,19 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
     public void updateUI(FirebaseUser user){
 
         if (user != null) {
-            //String name = user.getDisplayName() + " " + R.string.login_salir;
-            Uri uri = user.getPhotoUrl();
-            //Glide.with(this).load(uri).into(imageView);
+            cargarFragment(recetasFragment);
+//            String name = user.getDisplayName();
+//            String email = user.getEmail();
+//            String phone = user.getPhoneNumber();
+//            Uri uri = user.getPhotoUrl();
+//            String dataBaseName;
+//
+//            if (email != null) {
+//                String mail = email.substring(0, email.indexOf("."));
+//                dataBaseName = mail;
+//            }else {
+//                dataBaseName = phone;
+//            }
             frameText.setText(user.getDisplayName());
             navigationView.getMenu().findItem(R.id.login).setTitle(R.string.login_salir);
 
@@ -253,6 +265,32 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
         }
     }
 
+    //Confirmar si esta Logeado
+    public static Boolean isLogon(Context context){
+        if (currentUser!=null){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public static String dataBaseID(Context context) {
+        if (isLogon(context)) {
+            String email = currentUser.getEmail();
+            String phone = currentUser.getPhoneNumber();
+            String dataBaseName;
+
+            if (email != null) {
+                String mail = email.substring(0, email.indexOf("."));
+                dataBaseName = mail;
+            }else {
+                dataBaseName = phone;
+            }
+            return dataBaseName;
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public void irDetalleActividad(Receta receta, final Integer position) {
@@ -288,7 +326,55 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
         handler.postDelayed(new Runnable() {
             public void run() {
                 for (Integer i = 0; i<recetaList.size();i++){
-                    fragments.add(RecetaDetalleFragment.giveReceta(getApplicationContext(),position,recetaList.get(i)));
+                    fragments.add(RecetaDetalleFragment.giveReceta(getApplicationContext(),position,recetaList.get(i),"Publicas"));
+                }
+                adapter.setFragmentList(fragments);
+                //ViewPager
+                ViewPager viewPager = findViewById(R.id.viewPager);
+                viewPager.setAdapter(adapter);
+
+                //Inicializado
+                viewPager.setCurrentItem(position);
+                prog.dismiss();
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void irMiDetalleActividad(Receta receta, final Integer position) {
+        final List<Receta> recetaList = new ArrayList<>();
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        for (Fragment fragment:mFragmentManager.getFragments()) {
+            eliminarFragment(fragment);
+        }
+
+        //Lista de fragments
+        final List<Fragment> fragments = new ArrayList<>();
+        //Adapter
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),new ArrayList<Fragment>());
+        //Controller
+        ControllerFireBaseDataBase controllerFireBaseDataBase = new ControllerFireBaseDataBase();
+
+        controllerFireBaseDataBase.entrgarMisRecetas(this,new ResultListener<List<Receta>>() {
+            @Override
+            public void finish(List<Receta> results) {
+                recetaList.addAll(results);
+            }
+        });
+        //Progess dialog
+        final ProgressDialog prog= new ProgressDialog(this);
+        prog.setTitle("Por favor espere");
+        prog.setMessage("Estamos cargando sus recetas");
+        prog.setCancelable(false);
+        prog.setIndeterminate(true);
+        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        prog.show();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                for (Integer i = 0; i<recetaList.size();i++){
+                    fragments.add(RecetaDetalleFragment.giveReceta(getApplicationContext(),position,recetaList.get(i),"Mias"));
                 }
                 adapter.setFragmentList(fragments);
                 //ViewPager
