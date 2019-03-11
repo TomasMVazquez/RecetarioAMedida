@@ -3,6 +3,7 @@ package com.example.toms.recetarioamedida.view.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,8 @@ import com.example.toms.recetarioamedida.controller.ControllerFireBaseDataBase;
 import com.example.toms.recetarioamedida.model.Receta;
 import com.example.toms.recetarioamedida.utils.ResultListener;
 import com.example.toms.recetarioamedida.utils.SwipeAndDragHelper;
+import com.example.toms.recetarioamedida.view.MainActivity;
+import com.example.toms.recetarioamedida.view.NuevaRecetaActivity;
 import com.example.toms.recetarioamedida.view.adaptador.RecetarioAdaptador;
 
 import java.util.ArrayList;
@@ -108,14 +111,17 @@ public class MisRecetasFragment extends Fragment implements RecetarioAdaptador.A
         touchHelper.attachToRecyclerView(recetasRecycler);
 
         //FabAgregarReceta
-        //TODO Cambiar la forma que voy de fragment en fragment directo. Pasar por El Main con escuchadores
-        final AgregarRecetaFragment agregarRecetaFragment = new AgregarRecetaFragment();
         FloatingActionButton fabAddReceta = view.findViewById(R.id.fabAddMiReceta);
         fabAddReceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                getActivity().getSupportFragmentManager().beginTransaction().remove(MisRecetasFragment.this).commit();
-//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,agregarRecetaFragment).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(MisRecetasFragment.this).commit();
+                Intent intent = new Intent(getActivity(),NuevaRecetaActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(MainActivity.KEY_WHERE,MainActivity.KEY_MIAS);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,MainActivity.KEY_MIAS);
+
             }
         });
 

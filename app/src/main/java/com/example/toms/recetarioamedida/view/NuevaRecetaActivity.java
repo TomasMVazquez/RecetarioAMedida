@@ -1,17 +1,15 @@
-package com.example.toms.recetarioamedida.view.fragment;
+package com.example.toms.recetarioamedida.view;
 
-
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,10 +20,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
-import com.example.toms.recetarioamedida.controller.ControllerFireBaseDataBase;
 import com.example.toms.recetarioamedida.model.Receta;
-import com.example.toms.recetarioamedida.utils.ResultListener;
-import com.example.toms.recetarioamedida.view.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -34,18 +29,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class AgregarRecetaFragment extends Fragment {
+public class NuevaRecetaActivity extends AppCompatActivity {
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
@@ -67,17 +57,12 @@ public class AgregarRecetaFragment extends Fragment {
     private Switch switchTacc;
     private Switch switchMani;
     private Switch switchVegetarian;
-
-    public AgregarRecetaFragment() {
-        // Required empty public constructor
-    }
-
+    private int where;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_agregar_receta, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_nueva_receta);
 
         mDatabase = FirebaseDatabase.getInstance();
         mReference  = mDatabase.getReference();
@@ -87,19 +72,23 @@ public class AgregarRecetaFragment extends Fragment {
         //Raiz del Storage
         StorageReference raiz = mStorage.getReference();
 
-        linearLayout = view.findViewById(R.id.linearLayout);
-        imagen = view.findViewById(R.id.imagenAgregada);
-        titulo = view.findViewById(R.id.addTitulo);
-        procedimiento = view.findViewById(R.id.addProcedimiento);
-        addIngredientes = view.findViewById(R.id.addIngredientes);
-        switchVegano = view.findViewById(R.id.switchVegano);
-        switchTacc = view.findViewById(R.id.switchTacc);
-        switchMani = view.findViewById(R.id.switchMani);
-        switchVegetarian = view.findViewById(R.id.switchVegetarian);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        where = bundle.getInt(MainActivity.KEY_WHERE);
 
-        agregarImagen = view.findViewById(R.id.agregarImagen);
-        agregarIngrediente = view.findViewById(R.id.agregarIngrediente);
-        agregarReceta = view.findViewById(R.id.agregarReceta);
+        linearLayout = findViewById(R.id.linearLayout);
+        imagen = findViewById(R.id.imagenAgregada);
+        titulo = findViewById(R.id.addTitulo);
+        procedimiento = findViewById(R.id.addProcedimiento);
+        addIngredientes = findViewById(R.id.addIngredientes);
+        switchVegano = findViewById(R.id.switchVegano);
+        switchTacc = findViewById(R.id.switchTacc);
+        switchMani = findViewById(R.id.switchMani);
+        switchVegetarian = findViewById(R.id.switchVegetarian);
+
+        agregarImagen = findViewById(R.id.agregarImagen);
+        agregarIngrediente = findViewById(R.id.agregarIngrediente);
+        agregarReceta = findViewById(R.id.agregarReceta);
 
         agregarIngrediente.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,14 +97,14 @@ public class AgregarRecetaFragment extends Fragment {
                 if (!addIngredientes.getText().toString().equals("")){
                     ingredientes.add(addIngredientes.getText().toString());
 
-                    ingredientesInflados = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.ingrediente,null);
+                    ingredientesInflados = (TextView) LayoutInflater.from(NuevaRecetaActivity.this).inflate(R.layout.ingrediente,null);
                     ingredientesInflados.setText(ingred);
                     linearLayout.addView(ingredientesInflados);
 
                     addIngredientes.setText("");
 
                 }else {
-                    Toast.makeText(view.getContext(), "No hay ingredientes para agregar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NuevaRecetaActivity.this, "No hay ingredientes para agregar", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -129,11 +118,10 @@ public class AgregarRecetaFragment extends Fragment {
             }
         });
 
-        //TODO no esta funcionando la parte de subir la foto
         agregarImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AgregarRecetaFragment.this,"Elegir",101);
+                EasyImage.openChooserWithGallery(NuevaRecetaActivity.this,"Elegir",101);
             }
         });
 
@@ -146,32 +134,31 @@ public class AgregarRecetaFragment extends Fragment {
 
                 Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString(),switchVegano.isChecked(),switchTacc.isChecked(),switchMani.isChecked(),switchVegetarian.isChecked(),false,false);
                 agregarRecetaDatabase(nuevaReceta);
-
-                getActivity().getSupportFragmentManager().beginTransaction().remove(AgregarRecetaFragment.this).commit();
-
+                setResult(Activity.RESULT_OK);
+                finish();
             }
         });
-
-
-        return view;
     }
 
     public void agregarRecetaDatabase(final Receta receta){
         DatabaseReference id;
-//        if (MainActivity.isLogon(getContext())){
-//            String miDataBase = MainActivity.dataBaseID(getContext());
-//            id = mReference.child(miDataBase).push();
-//        }else {
+        Boolean esPublica;
+        if (where == MainActivity.KEY_MIAS){
+            String miDataBase = MainActivity.dataBaseID(this);
+            id = mReference.child(miDataBase).push();
+            esPublica = false;
+        }else {
             id = mReference.child("recetaList").push();
-//        }
+            esPublica = true;
+        }
 
-        id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento(),receta.getVegan(),receta.getTacc(),receta.getMani(),switchVegetarian.isChecked(),false,false));
+        id.setValue(new Receta(id.getKey(),receta.getImagen(),receta.getTitulo(),receta.getIngredientes(),receta.getProcedimiento(),receta.getVegan(),receta.getTacc(),receta.getMani(),switchVegetarian.isChecked(),esPublica,false));
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new EasyImage.Callbacks() {
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new EasyImage.Callbacks() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
 
@@ -183,12 +170,12 @@ public class AgregarRecetaFragment extends Fragment {
                 //RAIZ REFERENCIA
                 StorageReference raiz = mStorage.getReference();
 
-                if (list.size()>0) {
+                if (list.size() > 0) {
                     switch (i) {
                         case 101:
                             File file = list.get(0);
                             Uri uri = Uri.fromFile(file);
-                            Glide.with(getContext()).load(uri).into(imagen);
+                            Glide.with(NuevaRecetaActivity.this).load(uri).into(imagen);
 
                             final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
 
@@ -199,7 +186,7 @@ public class AgregarRecetaFragment extends Fragment {
                             uploadTask.addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Error al cargar imagen", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(NuevaRecetaActivity.this, "Error al cargar imagen", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -211,7 +198,7 @@ public class AgregarRecetaFragment extends Fragment {
                             break;
 
                         default:
-                            Glide.with(getActivity()).load(R.drawable.recetas_logo).into(imagen);
+                            Glide.with(NuevaRecetaActivity.this).load(R.drawable.recetas_logo).into(imagen);
                             break;
                     }
                 }
@@ -221,7 +208,5 @@ public class AgregarRecetaFragment extends Fragment {
             public void onCanceled(EasyImage.ImageSource imageSource, int i) {
 
             }
-        });
-    }
-
+        });}
 }

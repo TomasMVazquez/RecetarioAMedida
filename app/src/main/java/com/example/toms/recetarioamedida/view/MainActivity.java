@@ -1,16 +1,14 @@
 package com.example.toms.recetarioamedida.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -21,34 +19,24 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.toms.recetarioamedida.R;
 import com.example.toms.recetarioamedida.controller.ControllerFireBaseDataBase;
 import com.example.toms.recetarioamedida.model.Receta;
 import com.example.toms.recetarioamedida.utils.ResultListener;
 import com.example.toms.recetarioamedida.utils.Util;
 import com.example.toms.recetarioamedida.view.adaptador.ViewPagerAdapter;
-import com.example.toms.recetarioamedida.view.fragment.AgregarRecetaFragment;
 import com.example.toms.recetarioamedida.view.fragment.LogInFragment;
 import com.example.toms.recetarioamedida.view.fragment.MisRecetasFragment;
 import com.example.toms.recetarioamedida.view.fragment.RecetaDetalleFragment;
 import com.example.toms.recetarioamedida.view.fragment.RecetasFragment;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -56,18 +44,16 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class MainActivity extends AppCompatActivity implements RecetasFragment.OnFragmentRecetasNotify, MisRecetasFragment.OnFragmentMisRecetasNotify{
 
     public static final int KEY_LOGIN=101;
+    public static final int KEY_PUBLICAS = 201;
+    public static final int KEY_MIAS = 202;
+    public static final String KEY_WHERE = "where";
 
     private TextView frameText;
     private ImageView imageView;
@@ -89,9 +75,8 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    protected void onStart() {
+        super.onStart();
         //TODO HACER PUBLICAS RECETAS (AGREGAR NOMBRE USUARIO) Y AGREGAR FAVORITOS DE LAS RECETAS PUBLICAS
         mAuth = FirebaseAuth.getInstance();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -112,6 +97,12 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
             }, 3000);
             updateUI(currentUser);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -168,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
                         cargarFragment(misRecetasFragment);
                         return true;
 
-                    case R.id.favoritos:
-
-                        return true;
+//                    case R.id.favoritos:
+//
+//                        return true;
 
                     case R.id.aboutUs:
                         //cargar fragments
@@ -217,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
         fragmentTransaction.commit();
     }
 
-
     private void handleFacebookAccessToken(AccessToken token) {
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -229,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            Toast.makeText(MainActivity.this, user.getDisplayName()+" OnResume", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, user.getDisplayName()+" OnResume", Toast.LENGTH_SHORT).show();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(MainActivity.this, "Authentication failed.",
@@ -386,5 +376,24 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
                 prog.dismiss();
             }
         }, 1000);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case KEY_PUBLICAS:
+                    cargarFragment(recetasFragment);
+                    break;
+                case KEY_MIAS:
+                    cargarFragment(misRecetasFragment);
+                    break;
+            }
+
+        }else {
+
+        }
     }
 }

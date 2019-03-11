@@ -77,6 +77,10 @@ public class RecetaDetalleFragment extends Fragment {
         final List<Receta> recetaList = new ArrayList<>();
         final List<Receta> miRecetaList = new ArrayList<>();
 
+        //TODO no mostrar subir receta publica cuando ya es publica
+        //TODO Que hacer con corazoncito
+        //TODO para mis recetas o favoritas que hago?
+
         //firebase
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
@@ -146,7 +150,7 @@ public class RecetaDetalleFragment extends Fragment {
                     linearLayoutReceta.addView(ingredientesInflados);
                 }
             }else {
-                Toast.makeText(context, "Error al querer buscar una receta", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Error al querer buscar una receta", Toast.LENGTH_SHORT).show();
             }
         }
     }
