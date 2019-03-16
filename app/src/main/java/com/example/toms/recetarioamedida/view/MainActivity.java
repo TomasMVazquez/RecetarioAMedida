@@ -92,10 +92,14 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
                         //si salio y volvio pero esta logeado que cargar
                         eliminarFragment(logInFragment);
                         cargarFragment(misRecetasFragment);
+                    }else {
+                        cargarFragment(recetasFragment);
                     }
                 }
             }, 3000);
             updateUI(currentUser);
+        }else{
+            //cargarFragment(logInFragment);
         }
     }
 
@@ -156,7 +160,11 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
                         return true;
 
                     case R.id.misRecetas:
-                        cargarFragment(misRecetasFragment);
+                        if (currentUser!=null) {
+                            cargarFragment(misRecetasFragment);
+                        }else {
+                            Toast.makeText(MainActivity.this, "Debes estar logeado para ingresar a tus recetas", Toast.LENGTH_SHORT).show();
+                        }
                         return true;
 
 //                    case R.id.favoritos:

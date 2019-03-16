@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">RecetarioAMedida</string>
     <string name="referencias">Referencias de las recetas</string>
+    <string name="welcome">Bienvenidos a Recetario a Medida!</string>
+    <string name="explain">Acá podrás encontrar recetas y subir las tuyas propias</string>
 
     //NavigationView
     <string name="nombre">Recetas a tu medida</string>

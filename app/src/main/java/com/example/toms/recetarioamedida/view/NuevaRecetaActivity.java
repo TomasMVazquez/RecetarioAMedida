@@ -132,10 +132,14 @@ public class NuevaRecetaActivity extends AppCompatActivity {
                     ingredientes.add(addIngredientes.getText().toString());
                 }
 
-                Receta nuevaReceta = new Receta("0",rutaImagen,titulo.getText().toString(),ingredientes,procedimiento.getText().toString(),switchVegano.isChecked(),switchTacc.isChecked(),switchMani.isChecked(),switchVegetarian.isChecked(),false,false);
-                agregarRecetaDatabase(nuevaReceta);
-                setResult(Activity.RESULT_OK);
-                finish();
+                if (titulo.equals("")){
+                    Toast.makeText(NuevaRecetaActivity.this, "Debes ponerle un titulo a la receta", Toast.LENGTH_SHORT).show();
+                }else {
+                    Receta nuevaReceta = new Receta("0", rutaImagen, titulo.getText().toString(), ingredientes, procedimiento.getText().toString(), switchVegano.isChecked(), switchTacc.isChecked(), switchMani.isChecked(), switchVegetarian.isChecked(), false, false);
+                    agregarRecetaDatabase(nuevaReceta);
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
             }
         });
     }
@@ -180,6 +184,7 @@ public class NuevaRecetaActivity extends AppCompatActivity {
                             final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
 
                             //String exten = uriTemp.getLastPathSegment().substring(uriTemp.getLastPathSegment().indexOf("."));
+
                             StorageReference nuevaFoto = raiz.child(getResources().getString(R.string.ruta_imagenes)).child(uriTemp.getLastPathSegment());
 
                             UploadTask uploadTask = nuevaFoto.putFile(uriTemp);

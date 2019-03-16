@@ -73,45 +73,45 @@ public class RecetasFragment extends Fragment implements RecetarioAdaptador.Adap
         //Adaptador
         recetasRecycler.setAdapter(recetarioAdaptador);
 
-        //Swipe and Drag
-        SwipeAndDragHelper swipeAndDragHelper =new SwipeAndDragHelper(new SwipeAndDragHelper.ActionCompletionContract() {
-            @Override
-            public void onViewMoved(int oldPosition, int newPosition) {
+        //Swipe and Drag ---- En el compartido no pueden eliminar
 
-            }
-
-            @Override
-            public void onViewSwiped(final int position) {
-                final Receta receta = recetaList.get(position);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Confirmación");
-                builder.setMessage("Por favor confirmar que usted quiere quitar esta receta de su lista");
-                builder.setCancelable(false);
-                builder.setIcon(getActivity().getDrawable(R.drawable.recetas_logo));
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        recetarioAdaptador.eliminarReceta(position);
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        recetarioAdaptador.noRemoverReceta(receta,position);
-                    }
-                });
-
-                builder.show();
-            }
-        });
-
-        ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
-        recetarioAdaptador.setTouchHelper(touchHelper);
-        touchHelper.attachToRecyclerView(recetasRecycler);
+//        SwipeAndDragHelper swipeAndDragHelper =new SwipeAndDragHelper(new SwipeAndDragHelper.ActionCompletionContract() {
+//            @Override
+//            public void onViewMoved(int oldPosition, int newPosition) {
+//
+//            }
+//
+//            @Override
+//            public void onViewSwiped(final int position) {
+//                final Receta receta = recetaList.get(position);
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                builder.setTitle("Confirmación");
+//                builder.setMessage("Por favor confirmar que usted quiere quitar esta receta de su lista");
+//                builder.setCancelable(false);
+//                builder.setIcon(getActivity().getDrawable(R.drawable.recetas_logo));
+//                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        recetarioAdaptador.eliminarReceta(position);
+//                    }
+//                });
+//                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        recetarioAdaptador.noRemoverReceta(receta,position);
+//                    }
+//                });
+//
+//                builder.show();
+//            }
+//        });
+//
+//        ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
+//        recetarioAdaptador.setTouchHelper(touchHelper);
+//        touchHelper.attachToRecyclerView(recetasRecycler);
 
         //FabAgregarReceta
-        //TODO Cambiar la forma que voy de fragment en fragment directo. Pasar por El Main con escuchadores
         FloatingActionButton fabAddReceta = view.findViewById(R.id.fabAddReceta);
         fabAddReceta.setOnClickListener(new View.OnClickListener() {
             @Override

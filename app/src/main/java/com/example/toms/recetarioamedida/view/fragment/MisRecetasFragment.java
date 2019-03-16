@@ -22,6 +22,8 @@ import com.example.toms.recetarioamedida.utils.SwipeAndDragHelper;
 import com.example.toms.recetarioamedida.view.MainActivity;
 import com.example.toms.recetarioamedida.view.NuevaRecetaActivity;
 import com.example.toms.recetarioamedida.view.adaptador.RecetarioAdaptador;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,8 @@ public class MisRecetasFragment extends Fragment implements RecetarioAdaptador.A
 
     private List<Receta> recetaList = new ArrayList<>();
     private RecetarioAdaptador recetarioAdaptador;
-
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
 
     public MisRecetasFragment() {
         // Required empty public constructor
@@ -45,7 +48,6 @@ public class MisRecetasFragment extends Fragment implements RecetarioAdaptador.A
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_mis_recetas, container, false);
-
 
         recetarioAdaptador = new RecetarioAdaptador(new ArrayList<Receta>(),this);
 
@@ -93,6 +95,8 @@ public class MisRecetasFragment extends Fragment implements RecetarioAdaptador.A
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         recetarioAdaptador.eliminarReceta(position);
+                        eliminarMiReceta(receta, position);
+
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -127,6 +131,15 @@ public class MisRecetasFragment extends Fragment implements RecetarioAdaptador.A
 
 
         return view;
+    }
+
+    public void eliminarMiReceta(Receta receta, int posicion){
+        String miDataBase = MainActivity.dataBaseID(getActivity());
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference();
+        final DatabaseReference deviceDb = mReference.child(miDataBase).child(receta.getId());
+        deviceDb.removeValue();
+        recetaList.remove(posicion);
     }
 
     @Override

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.MainActivity"
-    tools:openDrawer="start"
+
     android:id="@+id/drawer"
     >
 
@@ -33,13 +33,33 @@
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/welcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/welcome"
+                    android:textColor="@color/colorBlack"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    />
+                <TextView
+                    android:id="@+id/explain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/explain"
+                    android:textColor="@color/colorGray"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@id/welcome"
+                    />
+
+                <TextView
                     android:id="@+id/referencia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/referencias"
                     android:textColor="@color/colorBlack"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="320dp"
                     />
 
                 <ImageView
@@ -47,7 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/vegan_icon"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="20dp"
                     android:layout_below="@id/referencia"
                     />
                 <TextView
@@ -55,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/refVegan"
                     android:layout_below="@id/referencia"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/es_vegan"
                     android:textColor="@color/colorPrimaryDark"
                     />
@@ -65,7 +86,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/vegetarian"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="20dp"
                     android:layout_below="@id/refVegan"
                     />
                 <TextView
@@ -73,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/refVegetarian"
                     android:layout_below="@id/refVegan"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:text="@string/es_vegetarian"
                     android:textColor="@color/colorPrimaryDark"
                     />
@@ -82,7 +104,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/sintacc"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="20dp"
                     android:layout_below="@id/refVegetarian"
                     />
                 <TextView
@@ -90,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/refTacc"
                     android:layout_below="@id/refVegetarian"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:text="@string/contiene_tacc"
                     android:textColor="@color/colorPrimaryDark"
                     />
@@ -99,7 +122,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/peanut_peanut"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="20dp"
                     android:layout_below="@id/refTacc"
                     />
                 <TextView
@@ -107,10 +131,11 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/refMani"
                     android:layout_below="@id/refTacc"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:text="@string/contiene_mani"
                     android:textColor="@color/colorPrimaryDark"
                     />
+
             </RelativeLayout>
 
             <ImageView
