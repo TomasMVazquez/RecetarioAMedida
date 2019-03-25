@@ -70,7 +70,8 @@ public class LogInFragment extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
-
+                getActivity().getSupportFragmentManager().beginTransaction().remove(LogInFragment.this).commit();
+                getActivity().recreate();
             }
 
             @Override

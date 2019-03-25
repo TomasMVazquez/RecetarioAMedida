@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
         //Progess dialog
         final ProgressDialog prog= new ProgressDialog(this);
         prog.setTitle("Por favor espere");
-        prog.setMessage("Estamos cargando sus recetas");
+        prog.setMessage("Estamos cargando recetas");
         prog.setCancelable(false);
         prog.setIndeterminate(true);
         prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
         handler.postDelayed(new Runnable() {
             public void run() {
                 for (Integer i = 0; i<recetaList.size();i++){
-                    fragments.add(RecetaDetalleFragment.giveReceta(getApplicationContext(),position,recetaList.get(i),"Publicas"));
+                    fragments.add(RecetaDetalleFragment.giveReceta(MainActivity.this,position,recetaList.get(i),"Publicas"));
                 }
                 adapter.setFragmentList(fragments);
                 //ViewPager
@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements RecetasFragment.O
         handler.postDelayed(new Runnable() {
             public void run() {
                 for (Integer i = 0; i<recetaList.size();i++){
-                    fragments.add(RecetaDetalleFragment.giveReceta(getApplicationContext(),position,recetaList.get(i),"Mias"));
+                    fragments.add(RecetaDetalleFragment.giveReceta(MainActivity.this,position,recetaList.get(i),"Mias"));
                 }
                 adapter.setFragmentList(fragments);
                 //ViewPager

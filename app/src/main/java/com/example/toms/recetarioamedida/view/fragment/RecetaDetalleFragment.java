@@ -1,6 +1,7 @@
 package com.example.toms.recetarioamedida.view.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -139,15 +140,19 @@ public class RecetaDetalleFragment extends Fragment {
                 handler.postDelayed(new Runnable() {
                     public void run() {
                     }
-                }, 1000);
+                }, 2000);
 
                 nombreReceta.setText(nvaReceta.getTitulo());
                 procedimientoReceta.setText(nvaReceta.getProcedimiento());
 
                 for (int i = 0; i < nvaReceta.getIngredientes().size() ; i++) {
-                    TextView ingredientesInflados = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.ingrediente,null);
-                    ingredientesInflados.setText(nvaReceta.getIngredientes().get(i));
-                    linearLayoutReceta.addView(ingredientesInflados);
+                    if (getActivity()!=null){
+                        @SuppressLint("InflateParams") TextView ingredientesInflados = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.ingrediente,null);
+                        ingredientesInflados.setText(nvaReceta.getIngredientes().get(i));
+                        linearLayoutReceta.addView(ingredientesInflados);
+                    }else {
+
+                    }
                 }
             }else {
 //                Toast.makeText(context, "Error al querer buscar una receta", Toast.LENGTH_SHORT).show();
