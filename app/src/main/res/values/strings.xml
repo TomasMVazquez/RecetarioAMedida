@@ -39,8 +39,8 @@
     <string name="continuar_sin_log">Continuar sin LogIn</string>
 
     //Facebook
-    <string name="facebook_app_id">191749718425918</string>
-    <string name="fb_login_protocol_scheme">fb191749718425918</string>
+    <string name="facebook_app_id">**</string>
+    <string name="fb_login_protocol_scheme">**</string>
 
     //Storage
     <string name="ruta_imagenes">recetas</string>
